@@ -1,12 +1,14 @@
 import pygame, sys
 from settings import *
+from modele.Level import Level
 
 class Game:
-    def _init_(self):
+    def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH,HEIGHT))
         pygame.display.set_caption('Zelda')
         self.clock = pygame.time.Clock()
+        self.level = Level()
 
 # Fonction qui lance la partie
     def run(self):
@@ -22,6 +24,9 @@ class Game:
             # On initialise différents paramètres
             # - On rempli l'écran en noir
             self.screen.fill('black') 
+
+            # - On appelle notre niveau
+            self.level.run()
 
             # - On met continuellement à jour l'écran 
             # (ou plutôt certaines parties de l'écran qui seront modifiées en fonctions des actions)
