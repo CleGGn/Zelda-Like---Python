@@ -1,5 +1,6 @@
 import pygame
 pygame.init()
+
 font = pygame.font.Font(None,30)
 
 # Fonction qui permet de créer une surface rectangulaire noire avec du texte blanc
