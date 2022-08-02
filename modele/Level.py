@@ -2,6 +2,7 @@ import pygame
 from settings import TILESIZE, WORLD_MAP
 from modele.Tile import Tile
 from modele.Player import Player
+from modele.YSortCameraGroup import YSortCameraGroup
 from debug import debug
 
 class Level:
@@ -10,12 +11,12 @@ class Level:
         self.display_surface = pygame.display.get_surface()
         # On initialise les différents groupes de sprite
         # Les sprites visibles à l'écran
-        self.visible_sprites = pygame.sprite.Group()
+        self.visible_sprites = YSortCameraGroup()
         # Les sprites non visible utilisés pour les collisions
         self.obstacle_sprites = pygame.sprite.Group()
         self.create_map()
 
-    # Fonction qui crée notre WORLD_MAP
+    # Fonction qui crée notre WORLD_MAP 
     def create_map(self):
         # On parcours notre WORLD_MAP pour déterminer quel élément se trouve à chaque index
         for row_index, row in enumerate(WORLD_MAP):
@@ -32,8 +33,7 @@ class Level:
                     self.player = Player((x,y),[self.visible_sprites], self.obstacle_sprites)
 
     def run(self):
-        # Affiche le niveau (Méthode inhérente à la classe Group())
-        self.visible_sprites.draw(self.display_surface)
+        # Affiche le niveau (On utilise une méthode d'affichage inhérente à notre Classe YSortCameraGroup)
+        self.visible_sprites.custom_draw(self.player)
         # Mets à jour le niveau (Méthode inhérente à la classe Group())
         self.visible_sprites.update()
-        debug(self.player.direction)

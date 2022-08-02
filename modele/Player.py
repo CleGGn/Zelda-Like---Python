@@ -7,9 +7,13 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load('assets/test/player.png').convert_alpha() # Le visuel
         self.rect = self.image.get_rect(topleft = pos) # la position
+        self.hitbox = self.rect.inflate(0, -26)
+
         self.direction = pygame.math.Vector2() # la direction
         self.speed = 5
+
         self.obstacle_sprites = obstacle_sprites
+
     # Fonction qui check la direction du joueur en fonction des boutons qu'il presse
     # Notre WORLD_MAP est un array donc aller vers le haut équivaut à reduire x de 1
     def input(self):
@@ -36,29 +40,28 @@ class Player(pygame.sprite.Sprite):
             # On utilise cette méthode pour les déplacements en diagonale qui sont toujours légèrement supérieur à déplacement en ligne
             self.direction = self.direction.normalize() 
         # Une fois la normalisation faite, on donne la nouvelle position du personnage    
-        self.rect.x += self.direction.x * speed
+        self.hitbox.x += self.direction.x * speed
         self.collision('horizontal')
-        self.rect.y += self.direction.y * speed
+        self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
-
-        # self.rect.center += self.direction * speed 
+        self.rect.center = self.hitbox.center
 
     # Fonction qui gère les collisions
     def collision(self, direction):
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.x > 0:
-                        self.rect.right = sprite.rect.left
+                        self.hitbox.right = sprite.hitbox.left
                     if self.direction.x < 0:
-                        self.rect.left = sprite.rect.right
+                        self.hitbox.left = sprite.hitbox.right
         if direction == 'vertical':
             for sprite in self.obstacle_sprites:
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.y > 0:
-                        self.rect.bottom = sprite.rect.top
+                        self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0:
-                        self.rect.top = sprite.rect.bottom
+                        self.hitbox.top = sprite.hitbox.bottom
 
     def update(self):
         self.input()
