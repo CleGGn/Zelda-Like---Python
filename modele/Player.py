@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load('assets/test/player.png').convert_alpha() # Le visuel
         self.rect = self.image.get_rect(topleft = pos) # la position
-        self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(0, -26) # la hitbox de notre player
 
         self.direction = pygame.math.Vector2() # la direction
         self.speed = 5
@@ -46,13 +46,13 @@ class Player(pygame.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center
 
-    # Fonction qui gère les collisions
+    # Fonction qui gère les collisions (non pas avec la surface des sprites mais avec les hitboxes)
     def collision(self, direction):
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
+                if sprite.hitbox.colliderect(self.hitbox): # "colliderect()"" verifie s'il y a collision entre "sprite" et "hitbox"
                     if self.direction.x > 0:
-                        self.hitbox.right = sprite.hitbox.left
+                        self.hitbox.right = sprite.hitbox.left # s'il y a collision entre les hitboxs alors on place la droite de la hitbox du personnage sur la gauche de la hitbox du sprite
                     if self.direction.x < 0:
                         self.hitbox.left = sprite.hitbox.right
         if direction == 'vertical':

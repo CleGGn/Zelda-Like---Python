@@ -8,6 +8,7 @@ TILESIZE = 64 # Proportion d'une "case" ( en pixel )
 # les 'x' représentent les blocs de rochers
 # les ' ' représentent l'espace pratiquable
 # le 'p' représente le joueur
+
 WORLD_MAP = [
 ['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x'],
 ['x',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','x'],

@@ -12,10 +12,17 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         self.offset = pygame.math.Vector2() # On initialise un vecteur pour le décalage de l'écran
 
+        # On créer le terrain
+        self.floor_surf = pygame.image.load('assets/tilemap/ground.png').convert()
+        self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
+
     def custom_draw(self, player):
         # On donne à notre vecteur des coordoonées équivalentes au centre du sprite du joueur moins la moitié et la hauteur de l'écran
         self.offset.x = player.rect.centerx - self.half_width 
         self.offset.y = player.rect.centery - self.half_heigth
+
+        floor_offset_pos = self.floor_rect.topleft - self.offset
+        self.display_surface.blit(self.floor_surf, floor_offset_pos)
 
         for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset # On positionne chaque sprites en fonction de notre offset (Notre personnage au centre de l'écran)

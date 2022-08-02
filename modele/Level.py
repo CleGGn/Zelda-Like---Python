@@ -4,6 +4,7 @@ from modele.Tile import Tile
 from modele.Player import Player
 from modele.YSortCameraGroup import YSortCameraGroup
 from debug import debug
+from modele.Support import import_csv_layout
 
 class Level:
     def __init__(self):
@@ -18,19 +19,31 @@ class Level:
 
     # Fonction qui crée notre WORLD_MAP 
     def create_map(self):
-        # On parcours notre WORLD_MAP pour déterminer quel élément se trouve à chaque index
-        for row_index, row in enumerate(WORLD_MAP):
-            for col_index, col in enumerate(row):
-                # TILESIZE = 64
-                x = col_index * TILESIZE
-                y = row_index * TILESIZE
-                if col == 'x': 
-                    # Si c'est un x, on lui attribut la classe Tile, censée représenter une case du jeu
-                    # On positionne cette Tile dans les sprites visibles et invisible pour pouvoir gérer les collisions
-                    Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
-                if col == 'p':
-                    # Si c'est un p, on lui attribut la classe Player, censée représenter le joueur
-                    self.player = Player((x,y),[self.visible_sprites], self.obstacle_sprites)
+        # On crée un dictionnaire dans lequel chaque fichier CSV sera importé sous une variable
+        layouts = {
+                'boundary': import_csv_layout('map/map_FloorBlocks.csv') # Les obstacles
+        }
+        # On parcours notre fichier CSV pour déterminer quel élément se trouve à chaque index
+        # style correspond au fichier CSV
+        # layout correspond au contenu
+        for style, layout in layouts.items():
+            for row_index, row in enumerate(layout):
+                for col_index, col in enumerate(row):
+                    # -1 = rien du tout
+                    # 395 = obstacle
+                    # Si le contenu de l'index de notre boucle n'est pas égal à -1 on crée des coordonnées et crée une case obstacle
+                    if col != '-1':    
+                        x = col_index * TILESIZE
+                        y = row_index * TILESIZE                      
+                        if style == 'boundary':    
+                            Tile((x,y),[self.obstacle_sprites],'invisible')              
+        #         if col == 'x': 
+        #             # Si c'est un x, on lui attribut la classe Tile, censée représenter une case du jeu
+        #             # On positionne cette Tile dans les sprites visibles et invisible pour pouvoir gérer les collisions
+        #             Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
+        #         if col == 'p':
+        #             # Si c'est un p, on lui attribut la classe Player, censée représenter le joueur
+        self.player = Player((2000,1430),[self.visible_sprites], self.obstacle_sprites)
 
     def run(self):
         # Affiche le niveau (On utilise une méthode d'affichage inhérente à notre Classe YSortCameraGroup)
