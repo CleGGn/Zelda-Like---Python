@@ -1,10 +1,12 @@
+from random import random
 import pygame
 from settings import TILESIZE, WORLD_MAP
 from modele.Tile import Tile
 from modele.Player import Player
 from modele.YSortCameraGroup import YSortCameraGroup
 from debug import debug
-from modele.Support import import_csv_layout
+from modele.Support import import_csv_layout, import_folder
+from random import choice
 
 class Level:
     def __init__(self):
@@ -21,8 +23,17 @@ class Level:
     def create_map(self):
         # On crée un dictionnaire dans lequel chaque fichier CSV sera importé sous une variable
         layouts = {
-                'boundary': import_csv_layout('map/map_FloorBlocks.csv') # Les obstacles
+                'boundary': import_csv_layout('map/map_FloorBlocks.csv'), # Les obstacles
+                'grass': import_csv_layout('map/map_Grass.csv'), # L'herbe'
+                'object': import_csv_layout('map/map_LargeObjects.csv'), # Les objets
         }
+
+        # On crée un dictionnaire dans lequel chaque variable correspond à un dossier d'image
+        graphics = {
+            'grass': import_folder('assets\grass'),
+            'objects':import_folder('assets\objects')
+        }
+        
         # On parcours notre fichier CSV pour déterminer quel élément se trouve à chaque index
         # style correspond au fichier CSV
         # layout correspond au contenu
@@ -36,13 +47,14 @@ class Level:
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE                      
                         if style == 'boundary':    
-                            Tile((x,y),[self.obstacle_sprites],'invisible')              
-        #         if col == 'x': 
-        #             # Si c'est un x, on lui attribut la classe Tile, censée représenter une case du jeu
-        #             # On positionne cette Tile dans les sprites visibles et invisible pour pouvoir gérer les collisions
-        #             Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
-        #         if col == 'p':
-        #             # Si c'est un p, on lui attribut la classe Player, censée représenter le joueur
+                            Tile((x,y),[self.obstacle_sprites],'invisible')
+                        if style == 'grass':  
+                            random_grass_image = choice(graphics['grass'])
+                            Tile((x,y),[self.visible_sprites],'grass', random_grass_image)
+                        if style == 'object': 
+                            surf_object = graphics['objects'][int(col)]
+                            Tile((x,y),[self.visible_sprites, self.obstacle_sprites],'object', surf_object)
+                        
         self.player = Player((2000,1430),[self.visible_sprites], self.obstacle_sprites)
 
     def run(self):
