@@ -1,7 +1,7 @@
 # Zelda Like in Python
 
-## Youtube project to learn Python and Pygame
-### Credits to Clear Code : https://youtu.be/QU1pPzEGrqw
+### Youtube project to learn advanced features on Pygame
+#### Credits to Clear Code : https://youtu.be/QU1pPzEGrqw
 
 ![maxresdefault](https://user-images.githubusercontent.com/88025507/182613612-38665d88-b649-4334-8249-338d455f79c7.jpg)
 
