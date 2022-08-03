@@ -6,7 +6,6 @@
 ![maxresdefault](https://user-images.githubusercontent.com/88025507/182613612-38665d88-b649-4334-8249-338d455f79c7.jpg)
 
 A Zelda-style RPG in Python that includes a lot of elements for a sophisticated game like graphics and animations.
-This project uses TILED to generate the graphics
 
 ![Sans titre](https://user-images.githubusercontent.com/88025507/182610795-90e3b81e-01f3-41fe-ad74-11f422275d0c.png)
 
