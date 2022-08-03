@@ -11,27 +11,36 @@ class Player(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2() # la direction
         self.speed = 5
-
+        self.attacking = False
+        self.attack_cooldown = 400
+        self.attack_time = None
         self.obstacle_sprites = obstacle_sprites
 
-    # Fonction qui check la direction du joueur en fonction des boutons qu'il presse
-    # Notre WORLD_MAP est un array donc aller vers le haut équivaut à reduire x de 1
+    # Fonction qui check les inputs du joueur
     def input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            self.direction.y = -1
+            self.direction.y = -1 # Notre map est un array donc aller vers le haut équivaut à reduire x de 1
         elif keys[pygame.K_DOWN]:
-            self.direction.y = 1
-            # Il faut remettre la direction à 0 si rien n'est pressé, sinon le joueur continuera d'aller dans cette direction
+            self.direction.y = 1     
         else:
-            self.direction.y = 0
-
+            self.direction.y = 0 # Il faut remettre la direction à 0 si rien n'est pressé, sinon le joueur continuera d'aller dans cette direction
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
         else:
             self.direction.x = 0
+
+        if keys[pygame.K_SPACE] and not self.attacking: # On vérifie lors de l'input que le joueur ne soit pas déja entrain d'attaquer 
+            self.attacking = True # S'il ne l'est pas, il le devient
+            self.attack_time = pygame.time.get_ticks() # On produit donc un tick (une seule fois) qui correspond à une valeur en millisecondes 
+            print('attack')
+
+        if keys[pygame.K_LCTRL] and not self.attacking: # On vérifie lors de l'input que le joueur ne soit pas déja entrain de faire de la magie 
+            self.attacking = True # S'il ne l'est pas, il le devient
+            self.attack_time = pygame.time.get_ticks() # On produit donc un tick (une seule fois) qui correspond à une valeur en millisecondes 
+            print('magic')
         
     # Fonction qui déplace le personnage en fonction de sa vitesse
     def move(self,speed):
@@ -63,7 +72,15 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
 
+    # Fonction qui gère les temps entre les actions
+    def cooldowns(self):
+        current_time = pygame.time.get_ticks()
+        if self.attacking:
+            if current_time - self.attack_time >= self.attack_cooldown: # Si la valeur du tick current_time - celle produite par une action est supérieur ou égale à notre variable attack_cooldown alors on considère que l'action a encore lieu (Cooldown en cours)
+                self.attacking = False
+
     def update(self):
         self.input()
+        self.cooldowns()
         self.move(self.speed)
     

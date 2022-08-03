@@ -1,6 +1,6 @@
 from random import random
 import pygame
-from settings import TILESIZE, WORLD_MAP
+from settings import TILESIZE
 from modele.Tile import Tile
 from modele.Player import Player
 from modele.YSortCameraGroup import YSortCameraGroup
@@ -17,9 +17,9 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         # Les sprites non visible utilisés pour les collisions
         self.obstacle_sprites = pygame.sprite.Group()
-        self.create_map()
+        self.create_map() 
 
-    # Fonction qui crée notre WORLD_MAP 
+    # Fonction qui créer notre map à partir des fichiers CSV
     def create_map(self):
         # On crée un dictionnaire dans lequel chaque fichier CSV sera importé sous une variable
         layouts = {
@@ -42,18 +42,18 @@ class Level:
                 for col_index, col in enumerate(row):
                     # -1 = rien du tout
                     # 395 = obstacle
-                    # Si le contenu de l'index de notre boucle n'est pas égal à -1 on crée des coordonnées et crée une case obstacle
+                    # Si le contenu de l'index de notre boucle n'est pas égal à -1 on crée des coordonnées et crée un sprite en fonction du contenu
                     if col != '-1':    
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE                      
-                        if style == 'boundary':    
-                            Tile((x,y),[self.obstacle_sprites],'invisible')
-                        if style == 'grass':  
-                            random_grass_image = choice(graphics['grass'])
+                        if style == 'boundary':    # Si obstacle
+                            Tile((x,y),[self.obstacle_sprites],'invisible') # on crée une instance de la class Tile, on la positionne dans les sprites invisibles et on le label
+                        if style == 'grass':  # si grass
+                            random_grass_image = choice(graphics['grass']) # on selectionne le dossier des sprites et on randomize l'affichage avec la méthode choice()
                             Tile((x,y),[self.visible_sprites],'grass', random_grass_image)
-                        if style == 'object': 
-                            surf_object = graphics['objects'][int(col)]
-                            Tile((x,y),[self.visible_sprites, self.obstacle_sprites],'object', surf_object)
+                        if style == 'object': # si objet (chaque objet étant unique, le nom du fichier correspond à l'id dans le CSV)
+                            surf_object = graphics['objects'][int(col)] #col = un objet
+                            Tile((x,y),[self.visible_sprites, self.obstacle_sprites],'object', surf_object) # on crée une instance de la class Tile, on la positionne dans les sprites invisibles et visible (obstacle visible) et on le label
                         
         self.player = Player((2000,1430),[self.visible_sprites], self.obstacle_sprites)
 
