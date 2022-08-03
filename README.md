@@ -1,6 +1,9 @@
 # Zelda Like in Python
 
-Credits to Clear Code : https://youtu.be/QU1pPzEGrqw
+## Youtube project to learn Python and Pygame
+### Credits to Clear Code : https://youtu.be/QU1pPzEGrqw
+
+![maxresdefault](https://user-images.githubusercontent.com/88025507/182613612-38665d88-b649-4334-8249-338d455f79c7.jpg)
 
 A Zelda-style RPG in Python that includes a lot of elements for a sophisticated game like graphics and animations.
 This project uses TILED to generate the graphics
