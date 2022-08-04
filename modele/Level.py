@@ -62,3 +62,4 @@ class Level:
         self.visible_sprites.custom_draw(self.player)
         # Mets à jour le niveau (Méthode inhérente à la classe Group())
         self.visible_sprites.update()
+        debug(self.player.status)
