@@ -4,7 +4,7 @@ from pygame.math import Vector2
 from modele.Support import import_folder
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(self, pos, groups, obstacle_sprites,create_attack, destroy_attack):
         super().__init__(groups)
         self.image = pygame.image.load('assets/test/player.png').convert_alpha() # Le visuel
         self.rect = self.image.get_rect(topleft = pos) # la position
@@ -22,7 +22,17 @@ class Player(pygame.sprite.Sprite):
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
+
         self.obstacle_sprites = obstacle_sprites
+
+        # Armes
+        self.create_attack = create_attack
+        self.weapon_index = 0
+        self.weapon = list(weapon_data.keys())[self.weapon_index]
+        self.destroy_attack = destroy_attack
+        self.can_switch_weapon = True
+        self.weapon_switch_time = None
+        self.switch_duration_cooldown = 200
 
     # Fonction qui va extraire chaque image et l'attribuer à son dossier correspondant
     def import_player_assets(self):
@@ -59,10 +69,22 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_SPACE]: # On vérifie lors de l'input que le joueur ne soit pas déja entrain d'attaquer 
                 self.attacking = True # S'il ne l'est pas, il le devient
                 self.attack_time = pygame.time.get_ticks() # On produit donc un tick (une seule fois) qui correspond à une valeur en millisecondes 
+                self.create_attack()
 
             if keys[pygame.K_LCTRL]: # On vérifie lors de l'input que le joueur ne soit pas déja entrain de faire de la magie 
                 self.attacking = True # S'il ne l'est pas, il le devient
                 self.attack_time = pygame.time.get_ticks() # On produit donc un tick (une seule fois) qui correspond à une valeur en millisecondes 
+
+            if keys[pygame.K_q] and self.can_switch_weapon:
+                self.can_switch_weapon = False
+                self.weapon_switch_time = pygame.time.get_ticks()
+                if self.weapon_index < len(weapon_data.keys()) - 1:
+                    self.weapon_index += 1 
+                else :
+                    self.weapon_index = 0    
+
+                self.weapon = list(weapon_data.keys())[self.weapon_index]
+
 
     # Fonction qui change la string de self.status en fonction des actions et des mouvements
     def get_status(self):
@@ -116,9 +138,16 @@ class Player(pygame.sprite.Sprite):
     # Fonction qui gère les temps entre les actions
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
+
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown: # Si la valeur du tick current_time - celle produite par une action est supérieur ou égale à notre variable attack_cooldown alors on considère que l'action a encore lieu (Cooldown en cours)
                 self.attacking = False
+                self.destroy_attack()
+
+        if not self.can_switch_weapon:
+            if current_time - self.weapon_switch_time >= self.switch_duration_cooldown: # Si la valeur du tick current_time - celle produite par une action est supérieur ou égale à notre variable attack_cooldown alors on considère que l'action a encore lieu (Cooldown en cours)
+                self.can_switch_weapon = True
+                
 
     # Fonction qui anime les actions en fonctions du statut
     def animate(self):

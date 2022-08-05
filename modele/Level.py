@@ -1,5 +1,6 @@
 from random import random
 import pygame
+from modele.Weapon import Weapon
 from settings import TILESIZE
 from modele.Tile import Tile
 from modele.Player import Player
@@ -7,6 +8,7 @@ from modele.YSortCameraGroup import YSortCameraGroup
 from debug import debug
 from modele.Support import import_csv_layout, import_folder
 from random import choice
+from modele.Weapon import Weapon
 
 class Level:
     def __init__(self):
@@ -17,6 +19,10 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         # Les sprites non visible utilisés pour les collisions
         self.obstacle_sprites = pygame.sprite.Group()
+
+        #attack sprites
+        self.current_attack = None
+
         self.create_map() 
 
     # Fonction qui créer notre map à partir des fichiers CSV
@@ -55,7 +61,15 @@ class Level:
                             surf_object = graphics['objects'][int(col)] #col = un objet
                             Tile((x,y),[self.visible_sprites, self.obstacle_sprites],'object', surf_object) # on crée une instance de la class Tile, on la positionne dans les sprites invisibles et visible (obstacle visible) et on le label
                         
-        self.player = Player((2000,1430),[self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((2000,1430),[self.visible_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack)
+
+    def create_attack(self):
+        self.current_attack = Weapon(self.player,[self.visible_sprites])
+
+    def destroy_attack(self):
+        if self.current_attack:
+            self.current_attack.kill()
+        self.current_attack = None
 
     def run(self):
         # Affiche le niveau (On utilise une méthode d'affichage inhérente à notre Classe YSortCameraGroup)
